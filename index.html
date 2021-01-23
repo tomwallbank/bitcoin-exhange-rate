@@ -1,0 +1,71 @@
+<html>
+    <head>
+            <link rel="stylesheet" href="style.css">
+
+    </head>
+
+    <body>
+        <div class="container">
+
+            <div class="heading">
+                <!-- Current BTC Price is: $ -->
+                USD to BTC conversion:
+            </div>
+    
+            <div class="input-container">
+                <div class="input">
+                    <input type="text" value="1" id="btc-box"><span class="text">BTC</span>
+                </div>
+                <div class="input">
+                    <input type="text" value="" id="usd-box"><span class="text">USD</span>
+                </div>
+            </div>
+
+            <div class="footer">
+                Source: Coinbase
+                <!-- Time: <span class="time"></span> -->
+            </div>
+
+        </div>
+
+
+    </body>
+
+    <script>
+        let url = "https://api.coinbase.com/v2/prices/BTC-USD/spot"
+        
+        async function getPrice(){
+            let data = await fetch(url)
+            let price = await data.json()
+            return await price.data.amount
+        } 
+        async function update(price){
+            let rate = price;
+        }
+
+        async function run(){
+            let price = await getPrice()
+            document.getElementById("usd-box").value = price;
+        }
+        window.onload=function() {
+            run()
+        }
+
+        async function updateUSD(){
+            let btc = parseFloat(document.getElementById("btc-box").value.replace(/,/g, ''));
+            let price = await getPrice();
+            document.getElementById("usd-box").value = (price * btc).toLocaleString();
+        }
+
+        async function updateBTC(){
+            let usd = parseFloat(document.getElementById("usd-box").value.replace(/,/g, ''))
+            let price = await getPrice();
+            document.getElementById("btc-box").value = ( usd / price ).toLocaleString();
+        }
+
+        document.getElementById("btc-box").addEventListener("keyup", updateUSD)        
+        document.getElementById("usd-box").addEventListener("keyup", updateBTC)
+
+    </script>
+
+</html>
